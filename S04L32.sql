@@ -1,3 +1,4 @@
+
 declare
 v_global varchar2(100) := 'this is a global variable';
 begin
