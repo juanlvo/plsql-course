@@ -58,7 +58,7 @@ END;
 * Output message: 'no, the salary is < 15000' if the salary < 15000
 */
 DECLARE
-    v_sal employee.salary%type;
+    v_sal employees.salary%type;
 BEGIN
     SELECT salary INTO v_sal
     FROM employees
