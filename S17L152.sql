@@ -22,3 +22,16 @@ UPDATE t1
 SET ename=ename||' s'
 WHERE emp_id=5555;
 
+---------------row trigger----------------------------------
+
+CREATE OR REPLACE TRIGGER t1_b4_update BEFORE UPDATE ON t1 FOR EACH ROW
+BEGIN
+  DBMS_OUTPUT.PUT_LINE(':)');
+END;
+
+UPDATE t1
+SET ename=ename||' s';
+
+UPDATE t1
+SET ename=ename||' s'
+WHERE emp_id=5555;
