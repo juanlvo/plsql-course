@@ -1,0 +1,53 @@
+DROP TABLE DEPT1;
+
+CREATE TABLE DEPT1(
+  deptno NUMBER,
+  dname VARCHAR2(100),
+  CONSTRAINT dept1_pk PRIMARY KEY (deptno)
+);
+
+INSERT INTO dept1(deptno, dname)
+VALUES(1, 'HR DEPT');
+
+INSERT INTO dept1(deptno, dname)
+VALUES(2, 'PO DEPT');
+
+COMMIT;
+
+SELECT *
+FROM dept1;
+
+DROP TABLE emp1;
+
+CREATE TABLE emp1(
+  empid NUMBER PRIMARY KEY,
+  ename VARCHAR2(100),
+  deptno NUMBER,
+  CONSTRAINT emp1_pk FOREIGN KEY (deptno) REFERENCES dept1(deptno) ON DELETE CASCADE
+);
+
+INSERT INTO emp1 VALUES(1, 'Juan', '1');
+INSERT INTO emp1 VALUES(2, 'Luis', '1');
+INSERT INTO emp1 VALUES(3, 'Emigdio', 1);
+INSERT INTO emp1 VALUES(4, 'Ana', '2');
+INSERT INTO emp1 VALUES(5, 'Caterina', '2');
+COMMIT;
+
+SELECT * FROM emp1;
+
+DELETE FROM dept1
+WHERE DEPTNO=1;
+
+SELECT * FROM emp1;
+
+CREATE OR REPLACE TRIGGER emp1_t BEFORE DELETE ON emp1 FOR EACH ROW 
+DECLARE
+  minv NUMBER;
+BEGIN
+  SELECT MIN(empid)
+  INTO minv
+  FROM emp1;
+END;
+
+DELETE FROM dept1
+WHERE DEPTNO=2;
