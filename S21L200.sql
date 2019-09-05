@@ -44,3 +44,47 @@ SELECT *
 FROM user_objects
 WHERE LOWER(object_name) in ('customer', 'v_customer', 'v2_customer');
 
+-------------------------------------case 2------------------------------------
+
+CREATE OR REPLACE FUNCTION get_cust_name (p_cust_id NUMBER) RETURN VARCHAR2 IS
+  v_name customer.name%TYPE;
+BEGIN
+  SELECT name INTO v_name
+  FROM customer
+  WHERE cust_id=p_cust_id;
+  EXCEPTION
+    WHEN OTHERS THEN RETURN NULL;
+END;
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('customer', 'v_customer', 'get_cust_name');
+
+ALTER TABLE customer
+ADD (location NUMBER);
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('customer', 'v_customer', 'get_cust_name');
+
+SELECT get_cust_name(10) FROM DUAL;
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('customer', 'v_customer', 'get_cust_name');
+
+--alter the column may or may not invalidate the function
+
+ALTER TABLE customers
+MODIFY tel VARCHAR2(300);
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('customer', 'v_customer', 'v2_customer', 'get_cust_name');
+
+ALTER TABLE customers
+MODIFY name VARCHAR2(300);
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('customer', 'v_customer', 'v2_customer', 'get_cust_name');
