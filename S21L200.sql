@@ -50,7 +50,7 @@ CREATE OR REPLACE FUNCTION get_cust_name (p_cust_id NUMBER) RETURN VARCHAR2 IS
   v_name customer.name%TYPE;
 BEGIN
   SELECT name INTO v_name
-  FROM customer
+  FROM customers
   WHERE cust_id=p_cust_id;
   EXCEPTION
     WHEN OTHERS THEN RETURN NULL;
@@ -88,3 +88,38 @@ MODIFY name VARCHAR2(300);
 SELECT *
 FROM user_objects
 WHERE LOWER(object_name) in ('customer', 'v_customer', 'v2_customer', 'get_cust_name');
+
+-----------------------------case 3---------------------------------------------
+--Impact on the procedure when adding/altering the original table
+
+CREATE OR REPLACE PROCEDURE p1 IS
+BEGIN
+  FOR i IN (SELECT cust_id FROM customers) LOOP
+    DBMS_OUTPUT.PUT_LINE(i.cust_id);
+  END LOOP;
+END;
+
+CREATE OR REPLACE PROCEDURE p2 IS
+BEGIN
+  FOR i IN (SELECT * FROM customers) LOOP
+    DBMS_OUTPUT.PUT_LINE(i.cust_id);
+  END LOOP;
+END;
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('p1', 'p2');
+
+ALTER TABLE customers
+ADD (addresss VARCHAR2(100));
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('p1', 'p2');
+
+ALTER TABLE customers
+MODIFY cust_id NUMBER(10);
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('p1', 'p2');
