@@ -58,3 +58,40 @@ WHERE LOWER(object_name) in ('all_products', 'v_all_products', 'read_from_synony
 
 SELECT * FROM v_all_products;
 
+--------------------------------------------------------------------------------
+
+DROP TABLE products;
+DROP TABLE all_products;
+DROP synonym products;
+DROP TABLE all_products2;
+
+
+CREATE TABLE all_products(
+  product_id NUMBER,
+  product_name VARCHAR2(100),
+  product_category VARCHAR2(100)
+);
+
+INSERT INTO all_products VALUES (1, 'Sony 52 Inch/LED M0014', 'TV');
+
+CREATE TABLE all_products2 AS SELECT * FROM all_products;
+
+
+CREATE OR REPLACE SYNONYM products FOR all_products;
+
+
+SELECT * FROM all_products;
+SELECT * FROM products;
+
+CREATE OR REPLACE VIEW v_all_products AS
+  SELECT * FROM products;
+  
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('all_products', 'v_all_products');
+
+CREATE OR REPLACE SYNONYM products FOR all_products2;
+
+SELECT *
+FROM user_objects
+WHERE LOWER(object_name) in ('all_products', 'v_all_products');
